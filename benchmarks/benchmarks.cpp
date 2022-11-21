@@ -21,6 +21,7 @@
 #include <thread>
 #include <algorithm>
 #include <cctype>
+#include <iostream>
 
 #include "../blockingconcurrentqueue.h"
 #include "lockbasedqueue.h"
@@ -96,9 +97,9 @@ const char BENCHMARK_NAMES[BENCHMARK_TYPE_COUNT][64] = {
 	"mostly enqueue bulk",
 	"mostly dequeue",
 	"mostly dequeue bulk",
-	"single-producer, multi-consumer",
-	"single-producer, multi-consumer (pre-produced)",
-	"multi-producer, single-consumer",
+	"single-producer-multi-consumer",
+	"single-producer-multi-consumer (pre-produced)",
+	"multi-producer-single-consumer",
 	"dequeue from empty",
 	"enqueue-dequeue pairs",
 	"heavy concurrent"
@@ -1880,7 +1881,7 @@ int main(int argc, char** argv)
 
 	sayf(0, "Legend:\n");
 	sayf(4, "'Avg':     Average time taken per operation, normalized to be per thread\n");
-	sayf(4, "'Range':   The minimum and maximum times taken per operation (per thread)\n");
+	// sayf(4, "'Range':   The minimum and maximum times taken per operation (per thread)\n");
 	sayf(4, "'Ops/s':   Overall operations per second\n");
 	sayf(4, "'Ops/s/t': Operations per second per thread (inverse of 'Avg')\n");
 	sayf(4, "Operations include those that fail (e.g. because the queue is empty).\n");
@@ -1937,24 +1938,24 @@ int main(int argc, char** argv)
 			continue;
 		}
 
-		sayf(0, "%s", BENCHMARK_NAMES[benchmark]);
+		// sayf(0, "%s", BENCHMARK_NAMES[benchmark]);
 		if (BENCHMARK_THREADS_MEASURED[benchmark] != 0) {
 			if (BENCHMARK_THREADS_MEASURED[benchmark] < 0) {
-				sayf(0, " (measuring all but %d %s)", -BENCHMARK_THREADS_MEASURED[benchmark], BENCHMARK_THREADS_MEASURED[benchmark] == -1 ? "thread" : "threads");
+				// sayf(0, " (measuring all but %d %s)", -BENCHMARK_THREADS_MEASURED[benchmark], BENCHMARK_THREADS_MEASURED[benchmark] == -1 ? "thread" : "threads");
 			}
 			else {
-				sayf(0, " (measuring %d %s)", BENCHMARK_THREADS_MEASURED[benchmark], BENCHMARK_THREADS_MEASURED[benchmark] == 1 ? "thread" : "threads");
+				// sayf(0, " (measuring %d %s)", BENCHMARK_THREADS_MEASURED[benchmark], BENCHMARK_THREADS_MEASURED[benchmark] == 1 ? "thread" : "threads");
 			}
 		}
-		sayf(0, ":\n");
+		// sayf(0, ":\n");
 		indent += 2;
-		sayf(indent, "(%s)\n", BENCHMARK_DESCS[benchmark]);
+		// sayf(indent, "(%s)\n", BENCHMARK_DESCS[benchmark]);
 
 		for (int queue = 0; queue != QUEUE_COUNT; ++queue) {
-			sayf(indent, "> %s\n", QUEUE_NAMES[queue]);
+			// sayf(indent, "> %s\n", QUEUE_NAMES[queue]);
 
 			if (!QUEUE_BENCH_SUPPORT[queue][benchmark]) {
-				sayf(indent + 3, "(skipping, benchmark not supported...)\n\n");
+				// sayf(indent + 3, "(skipping, benchmark not supported...)\n\n");
 				continue;
 			}
 
@@ -1963,7 +1964,7 @@ int main(int argc, char** argv)
 			}
 			for (int useTokens = 0; useTokens != 2; ++useTokens) {
 				if (QUEUE_TOKEN_SUPPORT[queue]) {
-					sayf(indent, "%s tokens\n", useTokens == 0 ? "Without" : "With");
+					// sayf(indent, "%s tokens\n", useTokens == 0 ? "Without" : "With");
 				}
 				if (useTokens == 1 && !QUEUE_TOKEN_SUPPORT[queue]) {
 					continue;
@@ -2083,9 +2084,20 @@ int main(int argc, char** argv)
 					opssts.push_back(opsst);
 					threadCounts.push_back(measuredThreads);
 
-					sayf(indent, "%-3d %7s:  Avg: %7ss  Range: [%7ss, %7ss]  Ops/s: %7s  Ops/s/t: %7s\n", nthreads, nthreads != 1 ? "threads" : "thread", pretty(avg), pretty(min), pretty(max), pretty(opsPerSecond), pretty(opsst));
+					// Benchmark Name, Queue Name, Queue Token Support, Threads, Avg, Ops/sec, Ops/sec/thread, Ops/sec/thread (weighted average)
+					sayf(indent,
+					  "%s,%s,%s,%-3d,%7ss,%7s,%7s\n",
+					  BENCHMARK_NAMES[benchmark],
+					  QUEUE_NAMES[queue],
+					  useTokens == 1 ? "TRUE" : "FALSE",
+					  nthreads,
+					  pretty(avg),
+					  pretty(opsPerSecond),
+					  pretty(opsst)
+					);
+
 					if (nthreads == 1 && BENCHMARK_SINGLE_THREAD_NOTES[benchmark][0] != '\0') {
-						sayf(indent + 7, "^ Note: %s\n", BENCHMARK_SINGLE_THREAD_NOTES[benchmark]);
+						// sayf(indent + 7, "^ Note: %s\n", BENCHMARK_SINGLE_THREAD_NOTES[benchmark]);
 					}
 				}
 
@@ -2098,7 +2110,7 @@ int main(int argc, char** argv)
 					totalWeight[queue] += std::sqrt(threadCounts[i]);
 				}
 				opsst /= divisor;
-				sayf(indent, "Operations per second per thread (weighted average): %7s\n\n", opsst == 0 ? "(n/a)" : pretty(opsst));
+				// sayf(indent, "Operations per second per thread (weighted average): %7s\n\n", opsst == 0 ? "(n/a)" : pretty(opsst));
 
 				indent -= 3;
 			}
@@ -2114,10 +2126,10 @@ int main(int argc, char** argv)
 	for (int queue = 0; queue != QUEUE_COUNT; ++queue) {
 		opsst = safe_divide(totalWeightedOpsst[queue], totalWeight[queue]);
 		if (QUEUE_SUMMARY_NOTES[queue] != nullptr && QUEUE_SUMMARY_NOTES[queue][0] != '\0') {
-			sayf(4, "%s (%s): %7s\n", QUEUE_NAMES[queue], QUEUE_SUMMARY_NOTES[queue], opsst == 0 ? "(n/a)" : pretty(opsst));
+			sayf(4, "%s (%s), %7s\n", QUEUE_NAMES[queue], QUEUE_SUMMARY_NOTES[queue], opsst == 0 ? "(n/a)" : pretty(opsst));
 		}
 		else {
-			sayf(4, "%s: %7s\n", QUEUE_NAMES[queue], opsst == 0 ? "(n/a)" : pretty(opsst));
+			sayf(4, "%s, %7s\n", QUEUE_NAMES[queue], opsst == 0 ? "(n/a)" : pretty(opsst));
 		}
 	}
 
