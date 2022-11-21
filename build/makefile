@@ -4,9 +4,7 @@
 
 include makefile.inc
 
-# PLATFORM_TARGET_OPTS =
-PLATFORM_OPTS = --target=riscv64-unknown-linux-gnu
-BASE_OPTS = $(PLATFORM_OPTS) -pthread
+BASE_OPTS = $(EXTRA_COPTS) -pthread
 
 DEBUG_OPTS = -g -O0   # -DMOODYCAMEL_QUEUE_INTERNAL_DEBUG
 RELEASE_OPTS = -O2 -g -DNDEBUG
