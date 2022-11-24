@@ -40,7 +40,7 @@ bin/fuzztests$(EXT): ../concurrentqueue.h ../tests/fuzztests/fuzztests.cpp ../te
 
 bin/benchmarks$(EXT): ../concurrentqueue.h ../benchmarks/benchmarks.cpp ../benchmarks/cpuid.h ../benchmarks/cpuid.cpp ../benchmarks/lockbasedqueue.h ../benchmarks/simplelockfree.h ../tests/common/simplethread.h ../tests/common/simplethread.cpp ../tests/common/systemtime.h ../tests/common/systemtime.cpp ../benchmarks/dlib/test_for_odr_violations.cpp makefile
 	test -d bin || mkdir bin
-	/opt/llvm.riscv/bin/clang++ -std=c++11 -Wall -pedantic-errors -Wpedantic $(BENCH_OPTS) -I../benchmarks ../benchmarks/cpuid.cpp ../tests/common/simplethread.cpp ../tests/common/systemtime.cpp ../benchmarks/dlib/test_for_odr_violations.cpp ../benchmarks/benchmarks.cpp -o bin/benchmarks$(EXT) -Lbin -latomic $(LD_OPTS)
+	$(CXX) -std=c++11 -Wall -pedantic-errors -Wpedantic $(BENCH_OPTS) -I../benchmarks ../benchmarks/cpuid.cpp ../tests/common/simplethread.cpp ../tests/common/systemtime.cpp ../benchmarks/dlib/test_for_odr_violations.cpp ../benchmarks/benchmarks.cpp -o bin/benchmarks$(EXT) -Lbin $(LD_OPTS)
 
 # bin/libtbb.a: makefile
 # 	test -d bin || mkdir bin
