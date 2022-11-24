@@ -190,7 +190,7 @@ enum queue_id_t
 	queue_moodycamel_ConcurrentQueue,
 	queue_moodycamel_BlockingConcurrentQueue,
 	queue_boost,
-	queue_tbb,
+	// queue_tbb,
 	queue_simplelockfree,
 	queue_lockbased,
 	queue_std,
@@ -202,7 +202,7 @@ const char QUEUE_NAMES[QUEUE_COUNT][64] = {
 	"moodycamel::ConcurrentQueue",
 	"moodycamel::BlockingConcurrentQueue",
 	"boost::lockfree::queue",
-	"tbb::concurrent_queue",
+	// "tbb::concurrent_queue",
 	"SimpleLockFreeQueue",
 	"LockBasedQueue",
 	"std::queue",
@@ -213,7 +213,7 @@ const char QUEUE_SUMMARY_NOTES[QUEUE_COUNT][128] = {
 	"including bulk",
 	"including bulk",
 	"",
-	"",
+	// "",
 	"",
 	"",
 	"single thread only",
@@ -224,7 +224,7 @@ const bool QUEUE_TOKEN_SUPPORT[QUEUE_COUNT] = {
 	true,
 	true,
 	false,
-	false,
+	// false,
 	false,
 	false,
 	false,
@@ -235,7 +235,7 @@ const int QUEUE_MAX_THREADS[QUEUE_COUNT] = {
 	-1,		// no limit
 	-1,
 	-1,
-	-1,
+	// -1,
 	-1,
 	-1,
 	1,
@@ -246,7 +246,7 @@ const bool QUEUE_BENCH_SUPPORT[QUEUE_COUNT][BENCHMARK_TYPE_COUNT] = {
 	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 	{ 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1 },
-	{ 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1 },
+	// { 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1 },
 	{ 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1 },
 	{ 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1 },
 	{ 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0 },
@@ -2004,9 +2004,9 @@ int main(int argc, char** argv)
 					case queue_boost:
 						maxOps = determineMaxOpsForBenchmark<BoostQueueWrapper<int>, int>((benchmark_type_t)benchmark, nthreads, (bool)useTokens, seed);
 						break;
-					case queue_tbb:
-						// maxOps = determineMaxOpsForBenchmark<TbbQueueWrapper<int>, int>((benchmark_type_t)benchmark, nthreads, (bool)useTokens, seed);
-						break;
+					// case queue_tbb:
+					// 	// maxOps = determineMaxOpsForBenchmark<TbbQueueWrapper<int>, int>((benchmark_type_t)benchmark, nthreads, (bool)useTokens, seed);
+					// 	break;
 					case queue_std:
 						maxOps = determineMaxOpsForBenchmark<StdQueueWrapper<int>, int>((benchmark_type_t)benchmark, nthreads, (bool)useTokens, seed);
 						break;
@@ -2040,9 +2040,10 @@ int main(int argc, char** argv)
 						case queue_boost:
 							elapsed = runBenchmark<BoostQueueWrapper<int>, int>((benchmark_type_t)benchmark, nthreads, (bool)useTokens, seed, maxOps, maxThreads, ops);
 							break;
-						case queue_tbb:
-							// elapsed = runBenchmark<TbbQueueWrapper<int>, int>((benchmark_type_t)benchmark, nthreads, (bool)useTokens, seed, maxOps, maxThreads, ops);
-							break;
+						// case queue_tbb:
+						// 	// elapsed = runBenchmark<TbbQueueWrapper<int>, int>((benchmark_type_t)benchmark, nthreads, (bool)useTokens, seed, maxOps, maxThreads, ops);
+						// 	elapsed = 1.0;
+						// 	break;
 						case queue_std:
 							elapsed = runBenchmark<StdQueueWrapper<int>, int>((benchmark_type_t)benchmark, nthreads, (bool)useTokens, seed, maxOps, maxThreads, ops);
 							break;
