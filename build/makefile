@@ -12,6 +12,8 @@ RELEASE_OPTS = -O2 -g -DNDEBUG
 ifeq ($(OS),Windows_NT)
 	PLATFORM_OPTS = -static
 	TBB_PLATFORM_OPTS = -DUSE_WINTHREAD
+else ifeq($(shell uname -s), Darwin)
+  # Do nothing, don't link anything special
 else
 	LD_PLATFORM_OPTS = -lrt
 	# -fsanitize=address seems to have a slow memory leak when creating/destroying a lot of threads
