@@ -1739,28 +1739,29 @@ static const char* pretty(double num)
 	}
 #endif
 
-	static char bufs[16][8];
+	static char bufs[16][64];
 	static int nextBuf = 0;
 	char* buf = bufs[nextBuf++];
 	nextBuf &= 15;
 
-	int suffix = 0;
-	if (num < 1) {
-		static const char minisufs[] = "\0munpfazy";
-		while (num < 0.01) {
-			++suffix;
-			num *= 1000;
-		}
-		sprintf(buf, "%1.4f%c", num, minisufs[suffix]);
-	}
-	else {
-		static const char megasufs[] = "\0kMGTPEZY";
-		while (num >= 1000) {
-			++suffix;
-			num /= 1000;
-		}
-		sprintf(buf, "%.2f%c", num, megasufs[suffix]);
-	}
+	// int suffix = 0;
+	sprintf(buf, "%.2f", num);
+	// if (num < 1) {
+	// 	static const char minisufs[] = "\0munpfazy";
+	// 	while (num < 0.01) {
+	// 		++suffix;
+	// 		num *= 1000;
+	// 	}
+	// 	sprintf(buf, "%1.4f%c", num, minisufs[suffix]);
+	// }
+	// else {
+	// 	static const char megasufs[] = "\0kMGTPEZY";
+	// 	while (num >= 1000) {
+	// 		++suffix;
+	// 		num /= 1000;
+	// 	}
+	// 	sprintf(buf, "%.2f%c", num, megasufs[suffix]);
+	// }
 
 	return buf;
 }
@@ -2087,12 +2088,12 @@ int main(int argc, char** argv)
 
 					// Benchmark Name, Queue Name, Queue Token Support, Threads, Avg, Ops/sec, Ops/sec/thread, Ops/sec/thread (weighted average)
 					sayf(2,
-					  "%s,%s,%s,%-3d,%7ss,%7s,%7s\n",
+					  "%s,%s,%s,%-3d,%7s,%7s\n",
 					  BENCHMARK_NAMES[benchmark],
 					  QUEUE_NAMES[queue],
 					  useTokens == 1 ? "TRUE" : "FALSE",
 					  nthreads,
-					  pretty(avg),
+						// pretty(avg),
 					  pretty(opsPerSecond),
 					  pretty(opsst)
 					);
