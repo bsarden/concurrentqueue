@@ -2086,7 +2086,7 @@ int main(int argc, char** argv)
 					threadCounts.push_back(measuredThreads);
 
 					// Benchmark Name, Queue Name, Queue Token Support, Threads, Avg, Ops/sec, Ops/sec/thread, Ops/sec/thread (weighted average)
-					sayf(indent,
+					sayf(2,
 					  "%s,%s,%s,%-3d,%7ss,%7s,%7s\n",
 					  BENCHMARK_NAMES[benchmark],
 					  QUEUE_NAMES[queue],
